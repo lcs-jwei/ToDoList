@@ -20,10 +20,18 @@ struct ListView: View {
             VStack{
                 
                 HStack{
-                    TextField("Enter a to-do item", text: Binding.constant(""))
+                    TextField("Enter a to-do item", text: $newItemDescription)
                         .padding()
                     Button(action: {
+                        let lastId = todoItem.last!.id
                         
+                        let newId = lastId + 1
+                        
+                        let newTodoItem = TodoItem(id: newId, description: newItemDescription, completed: false)
+                        
+                        todoItem.append(newTodoItem)
+                        
+                        newItemDescription = ""
                     }, label:{
                         Text("ADD")
                             .font(.caption)
@@ -32,17 +40,18 @@ struct ListView: View {
                     .padding()
                 }
                 
-                List{
-                    HStack{
-                        Image(systemName: "circle")
-                            .foregroundColor(.blue)
-                        Text("Prepare for Chemistry test")
-                    }
-                    HStack{
-                        Image(systemName: "checkmark.circle")
-                            .foregroundColor(.blue)
-                        Text("Do computer science homework")
-                    }
+                List(todoItem){ currentItem in
+                    
+                    Label(title: {
+                        Text(currentItem.description)
+                    }, icon: {
+                        if currentItem.completed{
+                            Image(systemName: "checkmark.circle")
+                        }else{
+                            Image(systemName: "circle")
+                        }
+                    })
+                    
                 }
                 
             }
