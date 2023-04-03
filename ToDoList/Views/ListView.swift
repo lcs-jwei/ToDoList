@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct ListView: View {
+    
+    //MARK: Stored property
+  //  @State var todoItem =
+    //MARK: Computed Property
     var body: some View {
         NavigationView{
             
@@ -15,17 +19,34 @@ struct ListView: View {
                 
                 HStack{
                     TextField("Enter a to-do item", text: Binding.constant(""))
-                    
+                        .padding()
                     Button(action: {
                         
                     }, label:{
                         Text("ADD")
                             .font(.caption)
+                            
                     })
                     .padding()
                 }
+                
+                List{
+                    HStack{
+                        Image(systemName: "circle")
+                            .foregroundColor(.blue)
+                        Text("Prepare for Chemistry test")
+                    }
+                    HStack{
+                        Image(systemName: "checkmark.circle")
+                            .foregroundColor(.blue)
+                        Text("Do computer science homework")
+                    }
+                }
+                
             }
+            
         }
+        .navigationTitle("To do")
     }
 }
 
