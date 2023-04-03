@@ -10,7 +10,9 @@ import SwiftUI
 struct ListView: View {
     
     //MARK: Stored property
-  //  @State var todoItem =
+    @State var todoItem : [TodoItem] = existingTodoItems
+    
+    @State var newItemDescription: String = ""
     //MARK: Computed Property
     var body: some View {
         NavigationView{
