@@ -59,9 +59,9 @@
 		DFD26DAB29DB569500F62017 /* ToDoList */ = {
 			isa = PBXGroup;
 			children = (
-				DFD26DC629DB5E1300F62017 /* Helpers */,
 				DFD26DAC29DB569500F62017 /* ToDoListApp.swift */,
 				DFD26DB029DB569600F62017 /* Assets.xcassets */,
+				DFD26DC629DB5E1300F62017 /* Helpers */,
 				DFD26DBE29DB5AAA00F62017 /* Model */,
 				DFD26DBA29DB56F100F62017 /* Views */,
 				DFD26DB229DB569600F62017 /* Preview Content */,

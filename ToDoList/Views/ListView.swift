@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Blackbird
 
 struct ListView: View {
     
     //MARK: Stored property
-    @State var todoItem : [TodoItem] = existingTodoItems
+    @BlackbirdLiveModels({db in
+        try await TodoItem.read(from: db)
+    }) var todoItems
     
     @State var newItemDescription: String = ""
     //MARK: Computed Property
@@ -23,15 +26,15 @@ struct ListView: View {
                     TextField("Enter a to-do item", text: $newItemDescription)
                         .padding()
                     Button(action: {
-                        let lastId = todoItem.last!.id
+                    //    let lastId = TodoItem.last!.id
+                      //
+                        //let newId = lastId + 1
                         
-                        let newId = lastId + 1
+                      //  let newTodoItem = TodoItem(id: newId, description: newItemDescription, completed: false)
                         
-                        let newTodoItem = TodoItem(id: newId, description: newItemDescription, completed: false)
+                        //todoItem.append(newTodoItem)
                         
-                        todoItem.append(newTodoItem)
-                        
-                        newItemDescription = ""
+                        //newItemDescription = ""
                     }, label:{
                         Text("ADD")
                             .font(.caption)
@@ -40,12 +43,12 @@ struct ListView: View {
                     .padding()
                 }
                 
-                List(todoItem){ currentItem in
+                List(todoItems.results){ currentItem in
                     
                     Label(title: {
                         Text(currentItem.description)
                     }, icon: {
-                        if currentItem.completed{
+                        if currentItem.completed == true {
                             Image(systemName: "checkmark.circle")
                         }else{
                             Image(systemName: "circle")
