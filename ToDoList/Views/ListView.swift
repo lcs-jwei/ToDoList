@@ -11,6 +11,8 @@ import Blackbird
 struct ListView: View {
     
     //MARK: Stored property
+    @Environment(\.blackbirdDatabase) var db:
+        Blackbird.Database?
     @BlackbirdLiveModels({db in
         try await TodoItem.read(from: db)
     }) var todoItems
@@ -26,15 +28,13 @@ struct ListView: View {
                     TextField("Enter a to-do item", text: $newItemDescription)
                         .padding()
                     Button(action: {
-                    //    let lastId = TodoItem.last!.id
-                      //
-                        //let newId = lastId + 1
-                        
-                      //  let newTodoItem = TodoItem(id: newId, description: newItemDescription, completed: false)
-                        
-                        //todoItem.append(newTodoItem)
-                        
-                        //newItemDescription = ""
+                        Task{
+                            try await db!.transaction { core in
+                                try core.query("INSERT INTO TodoItem (description) VALUES (?)", newItemDescription)
+                                
+                            }
+                            newItemDescription = ""
+                        }
                     }, label:{
                         Text("ADD")
                             .font(.caption)
