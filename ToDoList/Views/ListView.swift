@@ -11,9 +11,8 @@ import Blackbird
 struct ListView: View {
     
     //MARK: Stored property
-    @Environment(\.blackbirdDatabase) var db:
-        Blackbird.Database?
-    @BlackbirdLiveModels({db in
+    @Environment(\.blackbirdDatabase) var db: Blackbird.Database?
+    @BlackbirdLiveModels({ db in
         try await TodoItem.read(from: db)
     }) var todoItems
     
@@ -21,49 +20,50 @@ struct ListView: View {
     //MARK: Computed Property
     var body: some View {
         NavigationView{
-            
-            VStack{
-                
-                HStack{
-                    TextField("Enter a to-do item", text: $newItemDescription)
-                        .padding()
-                    Button(action: {
-                        Task{
-                            try await db!.transaction { core in
-                                try core.query("INSERT INTO TodoItem (description) VALUES (?)", newItemDescription)
-                                
-                            }
-                            newItemDescription = ""
-                        }
-                    }, label:{
-                        Text("ADD")
-                            .font(.caption)
-                            
-                    })
-                    .padding()
-                }
-                
-                List(todoItems.results){ currentItem in
+            Group{
+                VStack{
                     
-                    Label(title: {
-                        Text(currentItem.description)
-                    }, icon: {
-                        if currentItem.completed == true {
-                            Image(systemName: "checkmark.circle")
-                        }else{
-                            Image(systemName: "circle")
-                        }
-                    })
-                    .onTapGesture {
-                        Task {
-                            try await db!.transaction { core in
-                                try core.query("UPDATE TodoItem SET completed = (?) WHERE id = (?)", !currentItem.completed, currentItem.id)
+                    HStack{
+                        TextField("Enter a to-do item", text: $newItemDescription)
+                            .padding()
+                        Button(action: {
+                            Task{
+                                try await db!.transaction { core in
+                                    try core.query("INSERT INTO TodoItem (description) VALUES (?)", newItemDescription)
+                                    
+                                }
+                                newItemDescription = ""
+                            }
+                        }, label:{
+                            Text("ADD")
+                                .font(.caption)
+                            
+                        })
+                        .padding()
+                    }
+                    
+                    List(todoItems.results){ currentItem in
+                        
+                        Label(title: {
+                            Text(currentItem.description)
+                        }, icon: {
+                            if currentItem.completed == true {
+                                Image(systemName: "checkmark.circle")
+                            }else{
+                                Image(systemName: "circle")
+                            }
+                        })
+                        .onTapGesture {
+                            Task {
+                                try await db!.transaction { core in
+                                    try core.query("UPDATE TodoItem SET completed = (?) WHERE id = (?)", !currentItem.completed, currentItem.id)
+                                }
                             }
                         }
+                        
                     }
                     
                 }
-                
             }
             
         }
