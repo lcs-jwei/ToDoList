@@ -42,39 +42,39 @@ struct ListView: View {
                         .padding()
                     }
                     
-                    List(todoItems.results){ currentItem in
-                        
-                        Label(title: {
-                            Text(currentItem.description)
-                        }, icon: {
-                            if currentItem.completed == true {
-                                Image(systemName: "checkmark.circle")
-                            }else{
-                                Image(systemName: "circle")
-                            }
-                        })
-                        .onTapGesture {
-                            Task {
-                                try await db!.transaction { core in
-                                    try core.query("UPDATE TodoItem SET completed = (?) WHERE id = (?)", !currentItem.completed, currentItem.id)
+                    List{
+                        ForEach(todoItems.results){ currentItem in
+                            
+                            Label(title: {
+                                Text(currentItem.description)
+                            }, icon: {
+                                if currentItem.completed == true {
+                                    Image(systemName: "checkmark.circle")
+                                }else{
+                                    Image(systemName: "circle")
+                                }
+                            })
+                            .onTapGesture {
+                                Task {
+                                    try await db!.transaction { core in
+                                        try core.query("UPDATE TodoItem SET completed = (?) WHERE id = (?)", !currentItem.completed, currentItem.id)
+                                    }
                                 }
                             }
+                            
                         }
-                        
                     }
-                    
                 }
             }
-            
+            .navigationTitle("To do")
+
         }
-        .navigationTitle("To do")
     }
 }
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView{
             ListView()
-        }
+            .environment(\.blackbirdDatabase, AppDatabase.instance)
     }
 }
