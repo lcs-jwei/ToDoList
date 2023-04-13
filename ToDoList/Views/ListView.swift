@@ -13,7 +13,8 @@ struct ListView: View {
     //MARK: Stored property
     @Environment(\.blackbirdDatabase) var db: Blackbird.Database?
     @BlackbirdLiveModels({ db in
-        try await TodoItem.read(from: db)
+        try await TodoItem.read(from: db,
+                                sqlWhere: "description LIKE ?", "%\(searchText)%")
     }) var todoItems
     
     @State var newItemDescription: String = ""
@@ -61,14 +62,34 @@ struct ListView: View {
                                     }
                                 }
                             }
-                            
+                          
                         }
+                        .onDelete(perform: removeRows)
                     }
+                    .searchable(text: $searchText)
+                    
                 }
             }
             .navigationTitle("To do")
 
         }
+    }
+    //MARK: Functions
+    func removeRows(at offsets: IndexSet){
+        Task{
+            try await db!.transaction{ core in
+                var idList = ""
+                for offset in offsets{
+                    idList += "\(todoItems.results[offset].id),"
+                }
+                print(idList)
+                idList.removeLast()
+                print(idList)
+                
+                try core.query("DELETE FROM TodoItem WHERE id IN (?)",idList)
+            }
+        }
+        
     }
 }
 
