@@ -12,4 +12,5 @@ struct TodoItem: BlackbirdModel{
     @BlackbirdColumn var id: Int
     @BlackbirdColumn var description: String
     @BlackbirdColumn var completed: Bool
+   
 }
